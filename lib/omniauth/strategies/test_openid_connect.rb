@@ -199,7 +199,7 @@ module OmniAuth
   end
 end
 
-OmniAuth.config.add_camelization 'test_openid_connect', 'OpenIDConnect'
+OmniAuth.config.add_camelization 'oauth2', 'OpenIDConnect'
 
 module OmniAuth
   module Strategies
