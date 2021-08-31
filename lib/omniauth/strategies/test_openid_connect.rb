@@ -203,6 +203,6 @@ OmniAuth.config.add_camelization 'test_openid_connect', 'OpenIDConnect'
 
 module OmniAuth
   module Strategies
-    autoload :OpenIDConnect, "lib/omniauth/test_openid_connect"
+    autoload :OpenIDConnect, "lib/omniauth/test_openid_connect.rb"
   end
 end
