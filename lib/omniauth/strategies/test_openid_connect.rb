@@ -2,7 +2,7 @@
 
 require 'omniauth-oauth2'
 
-module OmniAuth
+module ::OmniAuth
   module OpenIDConnect
     class DiscoveryError < Error; end
   end
@@ -202,7 +202,7 @@ end
 
 OmniAuth.config.add_camelization 'oauth2', 'OpenIDConnect'
 
-module OmniAuth
+module ::OmniAuth
   module Strategies
     autoload :OpenIDConnect, "lib/omniauth/test_openid_connect.rb"
   end
