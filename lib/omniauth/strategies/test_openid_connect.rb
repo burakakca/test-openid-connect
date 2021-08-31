@@ -9,6 +9,7 @@ module OmniAuth
 
   module Strategies
     class OpenIDConnect < OmniAuth::Strategies::OAuth2
+      puts "*/*/*/*/*/*/*/*/*/*/*/*/*/*/"
       option :scope, "openid"
       option :discovery, true
       option :use_userinfo, true
