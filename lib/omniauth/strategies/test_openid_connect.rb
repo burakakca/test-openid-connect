@@ -13,9 +13,9 @@ module ::OmniAuth
       option :scope, "openid"
       option :discovery, true
       option :use_userinfo, true
-      option :cache, lambda { |key, &blk| blk.call } # Default no-op cache
-      option :error_handler, lambda { |error, message| nil } # Default no-op handler
-      option :verbose_logger, lambda { |message| nil } # Default no-op handler
+      # option :cache, lambda { |key, &blk| blk.call } # Default no-op cache
+      # option :error_handler, lambda { |error, message| nil } # Default no-op handler
+      # option :verbose_logger, lambda { |message| nil } # Default no-op handler
       option :passthrough_authorize_options, [:p]
       option :passthrough_token_options, [:p]
 
@@ -27,16 +27,14 @@ module ::OmniAuth
         userinfo_endpoint: nil,
         auth_scheme: :basic_auth
 
-      def verbose_log(message)
-        options.verbose_logger.call(message)
-      end
+      # def verbose_log(message)
+      #   options.verbose_logger.call(message)
+      # end
 
       def discover!
-        verbose_log("Fetching discovery document from #{options[:client_options][:discovery_document]}")
-        discovery_document = options.cache.call("openid_discovery_#{options[:client_options][:discovery_document]}") do
-          client.request(:get, options[:client_options][:discovery_document], parse: :json).parsed
-        end
-        verbose_log("Discovery document loaded\n\n#{discovery_document.to_yaml}")
+        # verbose_log("Fetching discovery document from #{options[:client_options][:discovery_document]}")
+        discovery_document = client.request(:get, options[:client_options][:discovery_document], parse: :json).parsed
+        # verbose_log("Discovery document loaded\n\n#{discovery_document.to_yaml}")
 
         discovery_params = {
           authorize_url: "authorization_endpoint",
@@ -89,8 +87,8 @@ module ::OmniAuth
       end
 
       def callback_phase
-        if request.params["error"] && request.params["error_description"] && response = options.error_handler.call(request.params["error"], request.params["error_description"])
-          verbose_log("Error handled, redirecting\n\n#{response.to_yaml}")
+        if request.params["error"] && request.params["error_description"]
+          # verbose_log("Error handled, redirecting\n\n#{response.to_yaml}")
           return redirect(response)
         end
 
@@ -117,7 +115,7 @@ module ::OmniAuth
         # token was acquired via a direct server-server connection to the issuer
         @id_token_info ||= begin
           decoded = JWT.decode(access_token['id_token'], nil, false).first
-          verbose_log("Loaded JWT\n\n#{decoded.to_yaml}")
+          # verbose_log("Loaded JWT\n\n#{decoded.to_yaml}")
           JWT::Verify.verify_claims(decoded,
             verify_iss: true,
             iss: options[:client_options][:site],
@@ -129,7 +127,7 @@ module ::OmniAuth
             verify_iat: false,
             verify_jti: false
           )
-          verbose_log("Verified JWT\n\n#{decoded.to_yaml}")
+          # verbose_log("Verified JWT\n\n#{decoded.to_yaml}")
 
           decoded
         end
@@ -138,7 +136,7 @@ module ::OmniAuth
       def userinfo_response
         @raw_info ||= begin
           info = access_token.get(options[:client_options][:userinfo_endpoint]).parsed
-          verbose_log("Fetched userinfo response\n\n#{info.to_yaml}")
+          # verbose_log("Fetched userinfo response\n\n#{info.to_yaml}")
           info
         end
 

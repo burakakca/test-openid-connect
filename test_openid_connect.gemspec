@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name          = "test_openid_connect"
-  spec.version       = "0.1.5"
+  spec.version       = "0.1.7"
   spec.required_ruby_version = ">= 2.4.0"
   spec.authors       = ["Burak Akça"]
   spec.email         = ["burak.akca834@gmail.com"]
