@@ -35,7 +35,9 @@ module ::OmniAuth
         # verbose_log("Fetching discovery document from #{options[:client_options][:discovery_document]}")
         discovery_document = client.request(:get, options[:client_options][:discovery_document], parse: :json).parsed
         # verbose_log("Discovery document loaded\n\n#{discovery_document.to_yaml}")
-
+        puts "****************"
+        puts discovery_document
+        puts "****************"
         discovery_params = {
           authorize_url: "authorization_endpoint",
           token_url: "token_endpoint",
