@@ -199,4 +199,10 @@ module OmniAuth
   end
 end
 
-OmniAuth.config.add_camelization 'openid_connect', 'OpenIDConnect'
+OmniAuth.config.add_camelization 'test_openid_connect', 'OpenIDConnect'
+
+module OmniAuth
+  module Strategies
+    autoload :OpenIDConnect, "lib/omniauth/test_openid_connect"
+  end
+end
