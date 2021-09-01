@@ -56,7 +56,7 @@ module ::OmniAuth
 
       def request_phase
         begin
-          discover! if options[:discovery]
+          discover!
         rescue ::OmniAuth::OpenIDConnect::DiscoveryError => e
           fail!(:openid_connect_discovery_error, e)
         end
