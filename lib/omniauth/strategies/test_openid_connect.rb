@@ -3,12 +3,12 @@
 require 'omniauth-oauth2'
 
 module ::OmniAuth
-  module OpenIDConnect
+  module Oauth2
     class DiscoveryError < Error; end
   end
 
   module Strategies
-    class OpenIDConnect < OmniAuth::Strategies::OAuth2
+    class Oauth2 < OmniAuth::Strategies::OAuth2
       puts "*/*/*/*/*/*/*/*/*/*/*/*/*/*/"
       option :scope, "openid"
       option :discovery, true
@@ -46,7 +46,7 @@ module ::OmniAuth
 
         discovery_params.each do |internal_key, external_key|
           val = discovery_document[external_key].to_s
-          raise ::OmniAuth::OpenIDConnect::DiscoveryError.new("missing discovery parameter #{external_key}") if val.nil? || val.empty?
+          raise ::OmniAuth::Oauth2::DiscoveryError.new("missing discovery parameter #{external_key}") if val.nil? || val.empty?
           options[:client_options][internal_key] = val
         end
 
@@ -57,7 +57,7 @@ module ::OmniAuth
       def request_phase
         begin
           discover!
-        rescue ::OmniAuth::OpenIDConnect::DiscoveryError => e
+        rescue ::OmniAuth::Oauth2::DiscoveryError => e
           fail!(:openid_connect_discovery_error, e)
         end
 
@@ -204,10 +204,10 @@ module ::OmniAuth
   end
 end
 
-OmniAuth.config.add_camelization 'oauth2', 'OpenIDConnect'
+# OmniAuth.config.add_camelization 'oauth2', 'OpenIDConnect'
 
-module ::OmniAuth
-  module Strategies
-    autoload :OpenIDConnect, "lib/omniauth/test_openid_connect.rb"
-  end
-end
+# module ::OmniAuth
+#   module Strategies
+#     autoload :OpenIDConnect, "lib/omniauth/test_openid_connect.rb"
+#   end
+# end
