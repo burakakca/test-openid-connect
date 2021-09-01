@@ -54,19 +54,19 @@ module ::OmniAuth
         options.use_userinfo = false if userinfo_endpoint.nil? || userinfo_endpoint.empty?
       end
 
-      # def request_phase
-      #   begin
-      #     discover! if options[:discovery]
-      #   rescue ::OmniAuth::OpenIDConnect::DiscoveryError => e
-      #     fail!(:openid_connect_discovery_error, e)
-      #   end
-
-      #   super
-      # end
-
       def request_phase
-        redirect client.auth_code.authorize_url({:redirect_uri => callback_url}.merge(options.authorize_params))
+        begin
+          discover! if options[:discovery]
+        rescue ::OmniAuth::OpenIDConnect::DiscoveryError => e
+          fail!(:openid_connect_discovery_error, e)
+        end
+
+        super
       end
+
+      # def request_phase
+      #   redirect client.auth_code.authorize_url({:redirect_uri => callback_url}.merge(options.authorize_params))
+      # end
 
       def authorize_params
         super.tap do |params|
