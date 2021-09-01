@@ -54,14 +54,18 @@ module ::OmniAuth
         options.use_userinfo = false if userinfo_endpoint.nil? || userinfo_endpoint.empty?
       end
 
-      def request_phase
-        begin
-          discover! if options[:discovery]
-        rescue ::OmniAuth::OpenIDConnect::DiscoveryError => e
-          fail!(:openid_connect_discovery_error, e)
-        end
+      # def request_phase
+      #   begin
+      #     discover! if options[:discovery]
+      #   rescue ::OmniAuth::OpenIDConnect::DiscoveryError => e
+      #     fail!(:openid_connect_discovery_error, e)
+      #   end
 
-        super
+      #   super
+      # end
+
+      def request_phase
+        redirect client.auth_code.authorize_url({:redirect_uri => callback_url}.merge(options.authorize_params))
       end
 
       def authorize_params
@@ -88,28 +92,28 @@ module ::OmniAuth
         super.merge(params)
       end
 
-      def callback_phase
-        if request.params["error"] && request.params["error_description"]
-          # verbose_log("Error handled, redirecting\n\n#{response.to_yaml}")
-          return redirect(response)
-        end
+      # def callback_phase
+      #   if request.params["error"] && request.params["error_description"]
+      #     # verbose_log("Error handled, redirecting\n\n#{response.to_yaml}")
+      #     return redirect(response)
+      #   end
 
-        begin
-          discover! if options[:discovery]
+      #   begin
+      #     discover! if options[:discovery]
 
-          oauth2_callback_phase = super
-          return oauth2_callback_phase if env['omniauth.error']
+      #     oauth2_callback_phase = super
+      #     return oauth2_callback_phase if env['omniauth.error']
 
-          if id_token_info["nonce"].nil? || id_token_info["nonce"].empty? || id_token_info["nonce"] != session.delete("omniauth.nonce")
-            return fail!(:csrf_detected, CallbackError.new(:csrf_detected, "CSRF detected"))
-          end
-          oauth2_callback_phase
-        rescue ::OmniAuth::OpenIDConnect::DiscoveryError => e
-          fail!(:openid_connect_discovery_error, e)
-        rescue JWT::DecodeError => e
-          fail!(:jwt_decode_failed, e)
-        end
-      end
+      #     if id_token_info["nonce"].nil? || id_token_info["nonce"].empty? || id_token_info["nonce"] != session.delete("omniauth.nonce")
+      #       return fail!(:csrf_detected, CallbackError.new(:csrf_detected, "CSRF detected"))
+      #     end
+      #     oauth2_callback_phase
+      #   rescue ::OmniAuth::OpenIDConnect::DiscoveryError => e
+      #     fail!(:openid_connect_discovery_error, e)
+      #   rescue JWT::DecodeError => e
+      #     fail!(:jwt_decode_failed, e)
+      #   end
+      # end
 
       def id_token_info
         # Verify the claims in the JWT
